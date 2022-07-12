@@ -8,6 +8,7 @@ import {
   FundOutlined,
   MoneyCollectOutlined,
   StarOutlined,
+  WalletOutlined
 } from "@ant-design/icons";
 export default function Navbar() {
   return (
@@ -34,7 +35,10 @@ export default function Navbar() {
         <Menu.Item icon={<StarOutlined />}>
           <Link to="/favourite">Favourite</Link>
         </Menu.Item>
+        <Menu.Item icon={<WalletOutlined />}>
+          < Link to="/wallet">Wallet</Link>
+        </Menu.Item>
       </Menu>
-    </div>
+    </div >
   );
 }

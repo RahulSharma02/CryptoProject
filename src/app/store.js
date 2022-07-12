@@ -2,26 +2,36 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { cryptoApi } from "../services/cryptoApi";
 import storage from "redux-persist/lib/storage";
 import { cryptoNewsApi } from "../services/cryptoNews";
-import { persistReducer } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
-import thunk from "redux-thunk";
+import { persistReducer, persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, } from "redux-persist";
+// import thunk from "redux-thunk";
+import favReducer from "../reducer/favouritesReducer";
 
-// const persistConfig = {
-//   key: "favourite",
-//   storage,
-//   whiteList: [], //
-// };
 
-// const reducers =combineReducers{
 
-// }
+const persistConfig = {
+  key: "fav",
+  storage,
+  whiteList: ['favourite'],
+};
 
-// const persistedReducer = persistReducer(persistConfig, reducers);
+const reducers = combineReducers({
+  // someSlice,
+  favReducer,
+  [cryptoApi.reducerPath]: cryptoApi.reducer,
+  [cryptoNewsApi.reducerPath]: cryptoNewsApi.reducer,
+})
 
-export default configureStore({
-  reducer: {
-    // persistedReducer,
-    [cryptoApi.reducerPath]: cryptoApi.reducer,
-    [cryptoNewsApi.reducerPath]: cryptoNewsApi.reducer,
-  },
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }).concat(cryptoApi.middleware)
 });
+export let persistor = persistStore(store);
+
+

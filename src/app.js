@@ -9,6 +9,7 @@ import {
   Cryptocurrencies,
   News,
   Favourite,
+  Wallet
 } from "./components";
 import "./app.css";
 
@@ -28,6 +29,8 @@ export default function app() {
               <Route path="/crypto/:coinId" element={<CryptoDetails />} />
               <Route path="/news" element={<News />} />
               <Route path="/favourite" element={<Favourite />} />
+              <Route path="/wallet" element={<Wallet />} />
+
             </Routes>
           </div>
         </Layout>

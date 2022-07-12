@@ -3,12 +3,20 @@ import millify from "millify";
 import { Link } from "react-router-dom";
 import { Card, Row, Col } from "antd";
 import { StarOutlined, StarFilled } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+
 
 export default function Favourites() {
-  const favouriteArray = JSON.parse(localStorage.getItem("favourite")).filter(
-    (currency) => currency.fav
-  );
-  console.log("favarray", favouriteArray);
+  const { favourite } = useSelector(state => {
+    return state.favReducer
+  });
+
+  const favouriteArray =
+    favourite.filter(
+      (currency) => currency.fav
+    );
+  console.log('***favouriteArray', favouriteArray)
+
   return (
     <>
       <Row gutters={[32, 32]} className="crypto-card-container">

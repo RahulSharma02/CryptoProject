@@ -7,10 +7,17 @@ import { StarOutlined, StarFilled } from "@ant-design/icons";
 import Loader from "./Loader";
 import { useGetCryptosQuery } from "../services/cryptoApi";
 
+// redux
+import { useDispatch, useSelector } from "react-redux";
+import { save } from "../reducer/favouritesReducer";
+
 export default function Cryptocurrencies({ simplified }) {
   const { Option } = Select;
-  const [favourite, setFavourite] = useState(true);
-  const [favouriteList, setFavouriteList] = useState([]);
+
+  const dispatch = useDispatch();
+  const { favourite } = useSelector(state => {
+    return state.favReducer
+  });
 
   const count = simplified ? 10 : 100;
   const { data: cryptosList, isFetching } = useGetCryptosQuery(count);
@@ -58,25 +65,14 @@ export default function Cryptocurrencies({ simplified }) {
       setCryptos(sortedCrypto);
     }
   };
-  const addFavourite = (id) => {
-    setFavourite(!favourite);
-    setFavouriteList([...favouriteList, id]);
+  const addFavourite = async (index) => {
 
-    const favouriteArr = cryptos.map((currency) => {
-      if (currency.uuid === id) {
-        console.log("if is run");
-        return { ...currency, fav: favourite };
-      } else {
-        console.log("if is run");
+    const favArr = JSON.parse(JSON.stringify(cryptos))
+    favArr[index].fav = !favArr[index].fav;
+    console.log('favArr', favArr)
 
-        return { ...currency };
-      }
-    });
-    setCryptos(favouriteArr);
-    const favs = JSON.stringify(favouriteArr);
-    localStorage.setItem("favourite", favs);
-
-    console.log("favourite id", id, favouriteArr);
+    setCryptos(favArr);
+    dispatch(save(favArr));
   };
 
   if (isFetching) return <Loader />;
@@ -113,7 +109,7 @@ export default function Cryptocurrencies({ simplified }) {
       )}
       <Row gutters={[32, 32]} className="crypto-card-container">
         {Array.isArray(cryptos) &&
-          cryptos?.map((currency) => {
+          cryptos?.map((currency, index) => {
             return (
               <Col
                 xs={24}
@@ -135,7 +131,10 @@ export default function Cryptocurrencies({ simplified }) {
                       </Link>
                       <span
                         onClick={() => {
-                          addFavourite(currency?.uuid);
+                          // addFavourite(currency?.uuid);
+                          addFavourite(index);
+
+
                         }}
                       >
                         {" "}
